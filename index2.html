@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .container { position: relative;width: 240px;height: 240px;}
+        .square {position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);border: 1px solid black;display: flex;justify-content: center;align-items: center;cursor: pointer;}
+        .square:nth-child(1) {width: 220px;height: 220px;}
+        .square:nth-child(2) {width: 200px;height: 200px;}
+        .square:nth-child(3) {width: 180px;height: 180px;}
+        .square:nth-child(4) {width: 160px;height: 160px;}
+        .square:nth-child(5) {width: 140px;height: 140px;}
+        .square:nth-child(6) {width: 120px;height: 120px;}
+    </style>
+</head>
+<body>
+        <div class="container">
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"><button id="center-button">Click me</button></div>
+        </div>
+<script>
+    const squares = document.querySelectorAll('.square');
+    const button = document.querySelector('#center-button');
+    let timeouts = [];
+    const colors = ['#FF69B4', '#33CC33', '#6666FF', '#FFCC00', '#FF69B4', '#0099CC'];
+    squares.forEach((square, i) => square.style.backgroundColor = colors[i]);
+    const lightenColor = (color, amount) =>
+        '#' + color.match(/\w\w/g).map(x => Math.min(255, parseInt(x, 16) + amount).toString(16).padStart(2, '0')).join('');
+    const handleSquareClick = ({ target }) => {
+        if (!button.contains(target)) return;
+        timeouts.forEach(clearTimeout);
+        timeouts = [...squares].flatMap((square, i) => [
+            setTimeout(() => {
+                square.style.backgroundColor = lightenColor(colors[i], 40)
+                console.log(i);
+            }, (squares.length - i) * 500),
+            setTimeout(() => {
+                square.style.backgroundColor = colors[i]
+                console.log(i);
+            }, (squares.length + i) * 600)
+        ]);
+    };
+    button.addEventListener('click', handleSquareClick);
+    document.querySelector('.container').addEventListener('click', handleSquareClick, true);
+</script>
+</body>
+</html>
