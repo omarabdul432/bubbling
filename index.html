@@ -3,68 +3,72 @@
 <head>
     <style>
         .container {
-            position: relative;
-            width: 240px;
-            height: 240px;
+            margin: 0 auto;
+            width: 400px;
         }
-        .square {
-            position: absolute;
-            margin: 50% 50%;
-            transform: translate(-50%, -50%);
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
-       .button-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 50px;
+
+        .box {
+            padding: 20px;
+            border: 1px solid gray;
+            text-align: center;
+            background-color: white;
         }
     </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="square" style="width: 220px; height: 220px;">
-                <div class="square" style="width: 200px; height: 200px;">
-                    <div class="square" style="width: 180px; height: 180px;">
-                        <div class="square" style="width: 160px; height: 160px;">
-                            <div class="square" style="width: 140px; height: 140px;">
-                                <div class="square" style="width: 120px; height: 120px;">
-                                    <div class="button-wrapper">
-                                        <button id="center-button">Click me</button>
-                                    </div>
-                                </div>
+</head>
+
+<body>
+    <div class="container">
+        <div class="box">
+            <div class="box">
+                <div class="box">
+                    <div class="box">
+                        <div class="box">
+                            <div class="box">
+                                <button onclick="start()">Click me</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-<script>
-    const squares = document.querySelectorAll('.square');
-    const button = document.querySelector('#center-button');
-    let timeouts = [];
-    const colors = ['#FF69B4', '#33CC33', '#6666FF', '#FFCC00', '#FF69B4', '#0099CC'];
-    squares.forEach((square, i) => square.style.backgroundColor = colors[i]);
-    const lightenColor = (color, amount) =>
-        '#' + color.match(/\w\w/g).map(x => Math.min(255, parseInt(x, 16) + amount).toString(16).padStart(2, '0')).join('');
-    const handleSquareClick = ({ target }) => {
-        if (!button.contains(target)) return;
-        timeouts.forEach(clearTimeout);
-        timeouts = [...squares].flatMap((square, i) => [
-            setTimeout(() => {
-                square.style.backgroundColor = lightenColor(colors[i], 40)
-                console.log(i);
-            }, (squares.length - i) * 500),
-            setTimeout(() => {
-                square.style.backgroundColor = colors[i]
-                console.log(i);
-            }, (squares.length + i) * 600)
-        ]);
-    };
-    button.addEventListener('click', handleSquareClick);
-    document.querySelector('.container').addEventListener('click', handleSquareClick, true);
-</script>
+    </div>
+    <script>
+        var targetQueues = [];
+        document.querySelectorAll('.box')
+            .forEach((element) => {
+                element.addEventListener('click', (event) => {
+                    if (event.eventPhase === event.BUBBLING_PHASE) {
+                        targetQueues.push(event.currentTarget)
+                        // console.log('bubbles');
+                        
+                    }
+                }, false);
+                element.addEventListener('click', (event) => {
+                    if (event.eventPhase === event.CAPTURING_PHASE) {
+                        targetQueues.push(event.currentTarget)
+                        // console.log('captures');
+                    }
+                }, true);
+            });
+
+        function start(){
+            var intervalId = setInterval(() => {
+                if (targetQueues.length) {
+                    targetQueues.shift().style.backgroundColor = getRandomColor();
+                }else{
+                    clearInterval(intervalId);
+                }
+            }, 1000);
+        }
+
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#000000';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+    </script>
 </body>
 </html>
