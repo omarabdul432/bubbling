@@ -37,37 +37,19 @@
         document.querySelectorAll('.box')
             .forEach((element) => {
                 element.addEventListener('click', (event) => {
-                    if (event.eventPhase === event.BUBBLING_PHASE) {
-                        targetQueues.push(event.currentTarget)
-                        // console.log('bubbles');
-                        
-                    }
+                    if (event.eventPhase === event.BUBBLING_PHASE) targetQueues.push(event.currentTarget)
                 }, false);
                 element.addEventListener('click', (event) => {
-                    if (event.eventPhase === event.CAPTURING_PHASE) {
-                        targetQueues.push(event.currentTarget)
-                        // console.log('captures');
-                    }
+                    if (event.eventPhase === event.CAPTURING_PHASE) targetQueues.push(event.currentTarget)
                 }, true);
             });
-
-        function start(){
+        function start() {
             var intervalId = setInterval(() => {
-                if (targetQueues.length) {
-                    targetQueues.shift().style.backgroundColor = getRandomColor();
-                }else{
-                    clearInterval(intervalId);
-                }
+                targetQueues.length ? targetQueues.shift().style.backgroundColor = getRandomColor() : clearInterval(intervalId);
             }, 1000);
         }
-
         function getRandomColor() {
-            var letters = '0123456789ABCDEF';
-            var color = '#000000';
-            for (var i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
+            return "#" + Array(6).fill().map(() => `0123456789ABCDEF`[Math.floor(Math.random() * 16)]).join``
         }
     </script>
 </body>
