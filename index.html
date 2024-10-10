@@ -36,12 +36,8 @@
         var targetQueues = [];
         document.querySelectorAll('.box')
             .forEach((element) => {
-                element.addEventListener('click', (event) => {
-                    if (event.eventPhase === event.BUBBLING_PHASE) targetQueues.push(event.currentTarget)
-                }, false);
-                element.addEventListener('click', (event) => {
-                    if (event.eventPhase === event.CAPTURING_PHASE) targetQueues.push(event.currentTarget)
-                }, true);
+                element.addEventListener('click', (event) => event.BUBBLING_PHASE ? targetQueues.push(event.currentTarget) : null, false);
+                element.addEventListener('click', (event) => event.CAPTURING_PHASE ? targetQueues.push(event.currentTarget) : null, true);
             });
         function start() {
             var intervalId = setInterval(() => {
